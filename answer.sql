@@ -30,3 +30,16 @@ FROM transactions
 WHERE refund_time IS NOT NULL
 GROUP BY store_id;
 
+/* Q4: Gross transaction value of each store's first order */
+SELECT 
+    t.store_id,
+    t.gross_transaction_value
+FROM transactions t
+JOIN (
+    SELECT 
+        store_id,
+        MIN(purchase_time) AS first_order_time
+    FROM transactions   /*Select the gross_transaction_value for that first purchase.*/
+    GROUP BY store_id
+) f ON t.store_id = f.store_id 
+   AND t.purchase_time = f.first_order_time;
