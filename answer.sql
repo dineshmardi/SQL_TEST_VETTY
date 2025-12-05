@@ -91,3 +91,20 @@ WITH ranked_orders AS (
 SELECT *
 FROM ranked_orders
 WHERE rn = 2;
+
+
+/*Q8: Retrieve second transaction time per buyer*/
+
+
+WITH ordered_trans AS (
+    SELECT 
+        buyer_id,
+        purchase_time,
+        ROW_NUMBER() OVER (PARTITION BY buyer_id ORDER BY purchase_time) AS rn
+    FROM transactions
+)
+SELECT 
+    buyer_id,
+    purchase_time AS second_transaction_time
+FROM ordered_trans
+WHERE rn = 2; /*Select rn = 2 to get the second transaction for each buyer.*/
