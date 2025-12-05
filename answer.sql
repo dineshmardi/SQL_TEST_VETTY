@@ -66,3 +66,14 @@ JOIN items i
 GROUP BY i.item_name
 ORDER BY times_ordered DESC
 LIMIT 1;
+
+/*Q6: Create refund flag for valid refunds processed <= 72 hours*/
+SELECT 
+    *,
+    CASE
+        WHEN refund_time IS NOT NULL
+         AND TIMESTAMPDIFF(HOUR, purchase_time, refund_time) <= 72 /*If time difference in HOURS <= 72 → valid refund.*/
+        THEN 'Valid Refund'
+        ELSE 'Invalid Refund'
+    END AS refund_flag
+FROM transactions;
