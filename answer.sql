@@ -43,3 +43,26 @@ JOIN (
     GROUP BY store_id
 ) f ON t.store_id = f.store_id 
    AND t.purchase_time = f.first_order_time;
+
+
+
+/* Q5: Most popular item ordered in buyers' first purchases*/
+
+WITH first_orders AS (
+    SELECT 
+        buyer_id,
+        MIN(purchase_time) AS first_time
+    FROM transactions
+    GROUP BY buyer_id
+)
+SELECT 
+    i.item_name,
+    COUNT(*) AS times_ordered /*Count and return the most frequently ordered item.*/
+FROM transactions t
+JOIN first_orders f 
+      ON t.buyer_id = f.buyer_id AND t.purchase_time = f.first_time
+JOIN items i 
+      ON t.item_id = i.item_id
+GROUP BY i.item_name
+ORDER BY times_ordered DESC
+LIMIT 1;
