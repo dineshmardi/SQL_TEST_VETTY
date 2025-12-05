@@ -77,3 +77,17 @@ SELECT
         ELSE 'Invalid Refund'
     END AS refund_flag
 FROM transactions;
+
+
+/*Q7: Retrieve each buyer's second purchase (excluding refunds)*/
+
+WITH ranked_orders AS (
+    SELECT 
+        *,
+        ROW_NUMBER() OVER (PARTITION BY buyer_id ORDER BY purchase_time) AS rn /*Order by purchase_time to rank purchases chronologically.*/
+    FROM transactions
+    WHERE refund_item IS NULL
+)
+SELECT *
+FROM ranked_orders
+WHERE rn = 2;
